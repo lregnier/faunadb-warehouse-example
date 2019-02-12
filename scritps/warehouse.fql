@@ -1,0 +1,192 @@
+//--------------- CLASSES ---------------//
+CreateClass({name: "warehouses"});
+CreateClass({name: "products"});
+CreateClass({name: "customers"});
+CreateClass({name: "orders"});
+
+//--------------- INDEXES ---------------//
+CreateIndex(
+  {
+    "name": "all_warehouses",
+    "source": Class("warehouses")
+   }
+);
+
+CreateIndex(
+  {
+    "name": "all_products",
+    "source": Class("products")
+   }
+);
+
+CreateIndex(
+  {
+    "name": "all_customers",
+    "source": Class("customers")
+   }
+);
+
+CreateIndex(
+  {
+    "name": "all_orders",
+    "source": Class("orders")
+   }
+);
+
+//---------------INSTANCES ---------------//
+Create(
+  Ref(Class("warehouses"), "1"), { 
+    data: { 
+      "name": "East", 
+      "address": { 
+        "street": "13 Pierstorff Drive", 
+        "city": "Washington",
+        "state": "DC",
+        "zipcode": "20220" 
+      }
+    }
+  }
+);
+
+Create(
+  Ref(Class("warehouses"), "2"), { 
+    data: { 
+      "name": "Central", 
+      "address": {
+        "street": "7529 Melrose Circle",
+        "city": "Dallas",
+        "zipcode": "75205",
+        "state": "TX"
+      }
+    },
+  }
+);
+
+Create(
+  Ref(Class("warehouses"), "3"), { 
+    data: { 
+      "name": "Central", 
+      "address": {
+        "street":"4 Elka Drive",
+        "city": "Tacoma",
+        "zipcode": "98424",
+        "state":"WA"
+      },
+    }
+  }
+);
+
+Create(
+  Ref(Class("products"), "1"), {
+    data: {
+      "name": "Cup",
+      "description": "Translucent 9 Oz",
+      "price": "6.90",
+      "stock": [
+        {
+          "warhouseId": "East",
+          "quantity": 35
+        },
+        {
+          "warhouseId": "Central",
+          "quantity": 18
+        },
+        {
+          "warhouseId": "West",
+          "quantity": 20
+        }
+      ],
+      "backordered": false
+    }
+  }
+);
+
+Create(
+  Ref(Class("products"), "2"), {
+    data: {
+      "name": "Beef Cheek",
+      "description": "Fresh",
+      "price": "5.28",
+      "stock": [
+        {
+          "warhouseId": "East",
+          "quantity": 20
+        },
+        {
+          "warhouseId": "Central",
+          "quantity": 12
+        }
+      ],
+      "backordered": false
+    }
+  }
+);
+
+Create(
+  Ref(Class("products"), "3"), {
+    data: {
+      "name": "Pizza",
+      "description": "Frozen Cheese",
+      "price": "4.07",
+      "stock": [
+        {
+          "warhouseId": "East",
+          "quantity": 58
+        },
+        {
+          "warhouseId": "Central",
+          "quantity": 24
+        }
+      ],
+      "backordered": false
+    }
+  }
+);
+
+Create(
+  Ref(Class("customers"), "1"), { 
+    data: { 
+      "firstName": "Auria", 
+      "lastName": "Osgardby", 
+      "address": { 
+        "street": "87856 Mendota Court", 
+        "city": "Idaho Falls",
+        "state": "ID",
+        "zipcode": "83405" 
+      }, 
+      "telephone": "208-346-0715" 
+    }
+  }
+);
+
+Create(
+  Ref(Class("customers"), "2"), { 
+    data: { 
+      "firstName": "Skipper", 
+      "lastName": "Scanes", 
+      "address": { 
+        "street": "72 Waxwing Terrace", 
+        "city": "Colorado Springs",
+        "state": "CO",
+        "zipcode": "80925" 
+      }, 
+      "telephone": "719-872-8799" 
+    }
+  }
+);
+
+Create(
+  Ref(Class("customers"), "3"), { 
+    data: { 
+      "firstName": "Ardith", 
+      "lastName": "Probert", 
+      "address": { 
+        "street": "5 Troy Trail", 
+        "city": "Fairbanks",
+        "state": "AK",
+        "zipcode": "99790",
+      }, 
+      "telephone": "907-949-4470"
+    }
+  }
+);
