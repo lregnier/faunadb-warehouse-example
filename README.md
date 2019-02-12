@@ -1,4 +1,7 @@
 # Warehouse Example
+## Introduction
+
+![alt text](images/warehouse.png "Warehouse")
 
 __Table of Contents__
 
