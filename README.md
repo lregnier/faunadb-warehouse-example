@@ -211,7 +211,7 @@ Get(Ref(Class("products"), "220510522473185799"));
 It reads Product's transaction history over time.
 
 ```
-Paginate(Ref(Class("users"), "224199563307647492"), { "events": true })
+Paginate(Ref(Class("users"), "220510522473185799"), { "events": true })
 ```
 
 #### Read All Products
