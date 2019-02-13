@@ -371,94 +371,106 @@ Delete(Ref(Class("customers"), "1520225686617873"))
 
 #### Submit Order
 
-It validates stock quantity for the requested products, updates it accordingly and creates a new Order.
+In order to submit an Order create below `User-Defined Function`. It validates stock quantity for the requested products, updates it accordingly and creates a new Order.
 
 ```
-Let(
+CreateFunction(
   {
-    "customerId": "1",
-    "products": 
-      [
-        {
-          "productId": "1",
-          "requestedQuantity": 10
-        },
-        {
-          "productId": "2",
-          "requestedQuantity": 10
-        },
-        {
-          "productId": "3",
-          "requestedQuantity": 10
-        }
-      ]
-  },
-  // 1- Get Customer and Products
-  Let(
-    {
-      "customer": Get(Ref(Class("customers"), Var("customerId"))),
-      "products": 
-        Map(
-          Var("products"),
-          Lambda("requestedProduct",
+    "name": "submit_order",
+    "body": Query(
+      Lambda(["customerId", "products"],
+        // 1- Get Cusomter and Products
+        Let(
+          {
+            "customer": Get(Ref(Class("customers"), Var("customerId"))),
+            "products": 
+              Map(
+                Var("products"),
+                Lambda("requestedProduct",
+                  Let(
+                    {
+                      "product": Get(Ref(Class("products"), Select("productId", Var("requestedProduct"))))
+                    },
+                    {
+                      "ref": Select("ref", Var("product")),
+                      "price": Select(["data", "price"], Var("product")),
+                      "currentQuantity": Add(SelectAll(["data", "stock", "quantity"], Var("product"))),
+                      "requestedQuantity": Select(["requestedQuantity"], Var("requestedProduct")) 
+                    }
+                  )
+                )
+              )
+          },
+          Do(
+            // 2- Check if there's enough stock for the requested products
+            Foreach(Var("products"),
+              Lambda("product",
+                If(
+                  LTE(Select("requestedQuantity", Var("product")), Select("currentQuantity", Var("product"))),
+                    Var("product"),
+                    Abort(Concat(["Stock quantity not enough for Product [", Select(["ref", "id"], Var("product")), "]"]))
+                )
+              )
+            ),
+            // 3- Update products stock
+            // TODO: add query for updating products stock
+            // 4- Create Order
             Let(
               {
-                "product": Get(Ref(Class("products"), Select("productId", Var("requestedProduct"))))
+                "orderProducts":
+                  Map(
+                    Var("products"),
+                    Lambda("product", 
+                      {
+                        "productId": Select("ref", Var("product")),
+                        "quantity": Select("requestedQuantity", Var("product")),
+                        "price": Select("price", Var("product"))
+                      }
+                    )
+                  )
               },
-              {
-                "ref": Select("ref", Var("product")),
-                "price": Select(["data", "price"], Var("product")),
-                "currentQuantity": Add(SelectAll(["data", "stock", "quantity"], Var("product"))),
-                "requestedQuantity": Select(["requestedQuantity"], Var("requestedProduct")) 
-              }
-            )
-          )
-        )
-    },
-    Do(
-      // 2- Check if there's enough stock for the requested products
-      Foreach(Var("products"),
-        Lambda("product",
-          If(
-            LTE(Select("requestedQuantity", Var("product")), Select("currentQuantity", Var("product"))),
-              Var("product"),
-              Abort(Concat(["Stock quantity not enough for Product [", Select(["ref", "id"], Var("product")), "]"]))
-          )
-        )
-      ),
-      // 3- Update products stock
-      // TODO: add query for updating products stock
-      // 4- Create Order
-      Let(
-        {
-          "orderProducts":
-            Map(
-              Var("products"),
-              Lambda("product", 
-                {
-                  "productId": Select("ref", Var("product")),
-                  "quantity": Select("requestedQuantity", Var("product")),
-                  "price": Select("price", Var("product"))
+              Create(
+                Class("orders"), {
+                  data: {
+                    "customerId": Select("ref", Var("customer")),
+                    "line": Var("orderProducts"),
+                    "status": "processing",
+                    "creationDate": "???",
+                    "shipDate": "???",
+                    "shipAddress": Select("ref", Var("customer")),
+                    "cardNumber": "???",
+                    "paymentmethod": "???"
+                  }
                 }
               )
             )
-        },
-        Create(
-          Class("orders"), {
-            data: {
-              "customerId": Select("ref", Var("customer")),
-              "line": Var("orderProducts"),
-              "status": "processing",
-              "creationDate": "???",
-              "shipDate": "???",
-              "shipAddress": Select("address", Var("customer")),
-              "cardNumber": "???",
-              "paymentmethod": "???"
-            }
-          }
+          )
         )
       )
     )
-  )
+  }
+);
+```
+
+In order to call the function, execute below command: 
+
+```
+Call(
+  Function("submit_order"), 
+    "1",
+    [
+      Object({
+        "productId": "1",
+        "requestedQuantity": 12
+      }),
+      Object({
+        "productId": "2",
+        "requestedQuantity": 22
+      }),
+      Object({
+        "productId": "3",
+        "requestedQuantity": 8
+      })
+    ]
 );
 ```
