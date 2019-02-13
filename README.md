@@ -16,7 +16,8 @@ __Table of Contents__
     * [Delete Warehouse](#delete-warehouse)
   * [Products](#products)
     * [Create Product](#create-product) 
-    * [Read Product](#read-product) 
+    * [Read Product](#read-product)
+    * [Read Product History](#read-product-history)
     * [Read All Products](#read-all-products)
     * [Update Product](#update-product)
     * [Replace Product](#replace-product)
@@ -204,6 +205,13 @@ It retrieves a Customer by its Id.
 
 ```
 Get(Ref(Class("products"), "220510522473185799"));
+```
+
+### Read Product History
+It reads Product's transaction history over time.
+
+```
+Paginate(Ref(Class("users"), "224199563307647492"), { "events": true })
 ```
 
 #### Read All Products
