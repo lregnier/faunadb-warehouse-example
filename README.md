@@ -179,20 +179,9 @@ Create(
       "name": "Cup",
       "description": "Translucent 9 Oz",
       "price": "6.90",
-      "stock": [
-        {
-          "warhouseId": "East",
-          "quantity": 35
-        },
-        {
-          "warhouseId": "Central",
-          "quantity": 18
-        },
-        {
-          "warhouseId": "West",
-          "quantity": 20
-        }
-      ],
+      "quantity": 105,
+      "warehouseId": Ref(Class("warehouses"), "1549398205020000"),
+      "backorderLimit": 10,
       "backordered": false
     }
   }
@@ -252,16 +241,9 @@ Replace(
       "name": "Cup",
       "description": "Translucent 9 Oz",
       "price": "7.90",
-      "stock": [
-        {
-          "warhouseId": "East",
-          "quantity": 35
-        },
-        {
-          "warhouseId": "West",
-          "quantity": 20
-        }
-      ],
+      "quantity": 105,
+      "warehouseId": Ref(Class("warehouses"), "1549398205020000"),
+      "backorderLimit": 10,
       "backordered": false
     }
   }
@@ -295,7 +277,11 @@ Create(
         "state": "ID",
         "zipcode": "83405" 
       }, 
-      "telephone": "208-346-0715" 
+      "telephone": "208-346-0715",
+      "creditCard": {
+        "network": "Visa",
+        "number": "4916112310613672"
+      }
     }
   }
 );
@@ -352,7 +338,11 @@ Replace(
         "state": "ID",
         "zipcode": "83405"
       }, 
-      "telephone": "719-872-8799"
+      "telephone": "719-872-8799",
+      "creditCard": {
+        "network": "Visa",
+        "number": "4916112310613672"
+      }
     }
   }
 );
@@ -394,15 +384,16 @@ CreateFunction(
                     {
                       "ref": Select("ref", Var("product")),
                       "price": Select(["data", "price"], Var("product")),
-                      "currentQuantity": Add(SelectAll(["data", "stock", "quantity"], Var("product"))),
-                      "requestedQuantity": Select(["requestedQuantity"], Var("requestedProduct")) 
+                      "currentQuantity": Select(["data", "quantity"], Var("product")),
+                      "requestedQuantity": Select(["requestedQuantity"], Var("requestedProduct")),
+                      "backorderLimit": Select(["data", "backorderLimit"], Var("product"))
                     }
                   )
                 )
               )
           },
           Do(
-            // 2- Check if there's enough stock for the requested products
+            // 2- Check if there's enough stock
             Foreach(Var("products"),
               Lambda("product",
                 If(
@@ -413,8 +404,34 @@ CreateFunction(
               )
             ),
             // 3- Update products stock
-            // TODO: add query for updating products stock
-            // 4- Create Order
+            Foreach(Var("products"),
+              Lambda("product",
+                Update(
+                  Select("ref", Var("product")), {
+                    data: {
+                      "quantity": Subtract(Select("currentQuantity", Var("product")), Select("requestedQuantity", Var("product")))
+                    }
+                  }
+                )
+              )
+            ),
+            // 4- Update backordered status
+            Foreach(Var("products"),
+              Lambda("product",
+                If(
+                  LTE(Subtract(Select("currentQuantity", Var("product")), Select("requestedQuantity", Var("product"))), Select("backorderLimit", Var("product"))),
+                  Update(
+                    Select("ref", Var("product")), {
+                      data: {
+                        "backordered": true
+                      }
+                    }
+                  ),
+                  Var("product")
+                )
+              )
+            ),
+            // 5- Create Order
             Let(
               {
                 "orderProducts":
@@ -435,11 +452,10 @@ CreateFunction(
                     "customerId": Select("ref", Var("customer")),
                     "line": Var("orderProducts"),
                     "status": "processing",
-                    "creationDate": "???",
-                    "shipDate": "???",
-                    "shipAddress": Select("ref", Var("customer")),
-                    "cardNumber": "???",
-                    "paymentmethod": "???"
+                    "creationDate": ToDate(Time("now")),
+                    "shipDate": null,
+                    "shipAddress": Select(["data", "address"], Var("customer")),
+                    "creditCard": Select(["data", "creditCard"], Var("customer"))
                   }
                 }
               )

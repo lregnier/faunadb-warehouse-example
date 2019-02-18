@@ -82,20 +82,9 @@ Create(
       "name": "Cup",
       "description": "Translucent 9 Oz",
       "price": "6.90",
-      "stock": [
-        {
-          "warhouseId": "East",
-          "quantity": 35
-        },
-        {
-          "warhouseId": "Central",
-          "quantity": 18
-        },
-        {
-          "warhouseId": "West",
-          "quantity": 20
-        }
-      ],
+      "quantity": 105,
+      "warehouseId": Ref(Class("warehouses"), "2"),
+      "backorderLimit": 5,
       "backordered": false
     }
   }
@@ -107,16 +96,9 @@ Create(
       "name": "Beef Cheek",
       "description": "Fresh",
       "price": "5.28",
-      "stock": [
-        {
-          "warhouseId": "East",
-          "quantity": 20
-        },
-        {
-          "warhouseId": "Central",
-          "quantity": 12
-        }
-      ],
+      "quantity": 72,
+      "warehouseId": Ref(Class("warehouses"), "3"),
+      "backorderLimit": 10,
       "backordered": false
     }
   }
@@ -128,16 +110,9 @@ Create(
       "name": "Pizza",
       "description": "Frozen Cheese",
       "price": "4.07",
-      "stock": [
-        {
-          "warhouseId": "East",
-          "quantity": 58
-        },
-        {
-          "warhouseId": "Central",
-          "quantity": 24
-        }
-      ],
+      "quantity": 64,
+      "warehouseId": Ref(Class("warehouses"), "1"),
+      "backorderLimit": 0,
       "backordered": false
     }
   }
@@ -154,7 +129,11 @@ Create(
         "state": "ID",
         "zipcode": "83405" 
       }, 
-      "telephone": "208-346-0715" 
+      "telephone": "208-346-0715",
+      "creditCard": {
+        "network": "Visa",
+        "number": "4556781272473393"
+      }
     }
   }
 );
@@ -170,7 +149,11 @@ Create(
         "state": "CO",
         "zipcode": "80925" 
       }, 
-      "telephone": "719-872-8799" 
+      "telephone": "719-872-8799",
+      "creditCard": {
+        "network": "Visa",
+        "number": "4916112310613672"
+      }
     }
   }
 );
@@ -186,7 +169,11 @@ Create(
         "state": "AK",
         "zipcode": "99790",
       }, 
-      "telephone": "907-949-4470"
+      "telephone": "907-949-4470",
+      "creditCard": {
+        "network": "Visa",
+        "number": "4532636730015542"
+      }
     }
   }
 );
