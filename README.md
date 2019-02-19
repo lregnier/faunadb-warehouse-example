@@ -361,7 +361,7 @@ Delete(Ref(Class("customers"), "1520225686617873"))
 
 #### Submit Order
 
-In order to submit an Order create below `User-Defined Function`. It validates stock quantity for the requested products, updates it accordingly and creates a new Order.
+In order to submit an Order create below `User-Defined Function`. When called, it will validate the products stock quantity, update it accordingly, check their backorder limit and create a new Order with all of the information.
 
 ```
 CreateFunction(
