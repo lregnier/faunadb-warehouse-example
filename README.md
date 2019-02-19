@@ -399,7 +399,7 @@ CreateFunction(
                 If(
                   LTE(Select("requestedQuantity", Var("product")), Select("currentQuantity", Var("product"))),
                     Var("product"),
-                    Abort(Concat(["Stock quantity not enough for Product [", Select(["ref", "id"], Var("product")), "]"]))
+                    Abort(Concat(["Stock quantity for Product [", Select(["ref", "id"], Var("product")), "] not enough – requested at [", ToString(Time("now")), "]"]))
                 )
               )
             ),
@@ -452,7 +452,7 @@ CreateFunction(
                     "customerId": Select("ref", Var("customer")),
                     "line": Var("orderProducts"),
                     "status": "processing",
-                    "creationDate": ToDate(Time("now")),
+                    "creationDate": ToString(Time("now")),
                     "shipDate": null,
                     "shipAddress": Select(["data", "address"], Var("customer")),
                     "creditCard": Select(["data", "creditCard"], Var("customer"))
