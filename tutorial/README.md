@@ -633,4 +633,4 @@ And in the other, an error message saying there's not enough stock for perfoming
 'Stock quantity for Product [1] not enough – requested at [2019-03-11T22:43:17.066135Z]' 
 ```
 
-If you look closer at the Order `creationDate` and the time prompted in the error message, you will find that both time values differed only by fraction of seconds. This demonstrates that despite being executed at the same time, the two queries have been effectively being processed in a serialized way and only one of them has managed to the records store in the database.
+If you look closer at the Order `creationDate` and the time prompted in the error message, you will find that both time values differ only by fraction of seconds. This demonstrates that despite being executed at the same time, the two queries have been effectively being processed in a serialized way and only one of them has managed to modifiy the records store in the database.
