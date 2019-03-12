@@ -1,5 +1,8 @@
 # FaunaDB: E-Commerce Tutorial
-This tutorial showcases FaunaDB correctness guarantees upon the execution of concurrent distributed transactions in the context of a E-Commerce scenario.
+
+FaunaDB is a distributed database which was built to address technology requirements from modern digital businesses. One of its main features is its capability to keep strong consistency levels, typical of relational databases, while offering the the scale and flexibility of non-relational systems. Inspired by the [Calvin](http://cs.yale.edu/homes/thomson/publications/calvin-sigmod12.pdf) protocol, maintaining the integrity of transactions in a multi-region environment has been a foundation pillar from day one.
+
+The current tutorial showcases FaunaDB correctness guarantees upon the execution of concurrent distributed transactions in the context of a E-Commerce scenario.
 
 > For further information on the multiple consistency levels supported by FaunaDB, please visit following link: [Isolation Levels](https://docs.fauna.com/fauna/current/reference/isolation_levels.html).
 
@@ -12,10 +15,11 @@ This tutorial showcases FaunaDB correctness guarantees upon the execution of con
 * [Use cases](#use-cases)
   * [1. Submit a simple Order](#1-submit-a-simple-order) 
   * [2. Submit an Order with insufficient stock](#2-submit-an-order-with-insufficient-stock) 
-  * [3. Submit two Orders with insufficient stock at the same time](#3-submit-two-orders-with-insufficient-stock-at-the-same-time)  
+  * [3. Submit two Orders with insufficient stock at the same time](#3-submit-two-orders-with-insufficient-stock-at-the-same-time)
+* [Conclusions](#conclusions)
 
 ## Prerequisites
-In order to run the query snipptes below, you will need to setup a Fauna Cloud account and install the Fauna Shell in your computer. You can create a free Fauna Cloud account in seconds by signing up [here](https://dashboard.fauna.com/accounts/register). The [Fauna Shell](https://github.com/fauna/fauna-shell#fauna-shell) can be installed using [npm](https://www.npmjs.com/package/fauna-shell) or alternivately, if your on a Mac, you can use [Homebrew](https://formulae.brew.sh/formula/fauna-shell).
+In order to run the query snipptes below, you will need to setup a __Fauna Cloud__ account and install the __Fauna Shell__ in your computer. You can create a free Fauna Cloud account in seconds by signing up [here](https://dashboard.fauna.com/accounts/register). The [Fauna Shell](https://github.com/fauna/fauna-shell#fauna-shell) can be installed using [npm](https://www.npmjs.com/package/fauna-shell) or alternivately, if your on a Mac, you can use [Homebrew](https://formulae.brew.sh/formula/fauna-shell).
 
 ## Setting up
 ### Create the Database
@@ -67,9 +71,9 @@ CreateClass({name: "customers"});
 CreateClass({name: "orders"});
 ```
 
-In order to access the data within the classes other than by its Refs, we need to create a class index. An index is a database entity that facilitates data lookups.
+In order to access the data within the classes, we need to create a class index. An index is a database entity that allows the retrieval of instances by attributes other than their refs. A class index in this case will return all instances for a given class.
 
-> Indexes allow for the organization and retrieval of instances by attributes other than their Refs. 
+> A _reference_, or _ref_ for short, is an identifier present in every object in the database. A ref encodes the class it belongs to along with a unique id, and is therefore unique within the scope of the database in which it is stored.
 
 Run below queries in the shell for creating the class indexes:
 
@@ -627,10 +631,12 @@ As result you should see in one of the terminals that the Order has been created
 }
 ```
 
-And in the other, an error message saying there's not enough stock for perfoming the operation.
+And in the other, an error message saying there's not enough stock for perfoming the operation:
 
 ```
 'Stock quantity for Product [1] not enough – requested at [2019-03-11T22:43:17.066135Z]' 
 ```
 
-If you look closer at the Order `creationDate` and the time prompted in the error message, you will find that both time values differ only by fraction of seconds. This demonstrates that despite being executed at the same time, the two queries have been effectively being processed in a serialized way and only one of them has managed to modifiy the records store in the database.
+If you look closer at the Order `creationDate` and the time prompted in the error message, you will find that both time values differ only by fraction of seconds. This demonstrates that despite being executed at the same time, the two queries have been effectively being processed in a serialized way and only one of them has managed to modifiy the records stored in the database.
+
+## Conclusions
