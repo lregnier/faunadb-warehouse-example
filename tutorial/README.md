@@ -3,6 +3,17 @@ This tutorial showcases FaunaDB correctness guarantees upon the execution of con
 
 > For further information on the multiple consistency levels supported by FaunaDB, please visit following link: [Isolation Levels](https://docs.fauna.com/fauna/current/reference/isolation_levels.html).
 
+##### Table of Contents
+* [Prerequisites](#prerequisites)
+* [Setting up](#setting-up)
+  * [Create the Database](#create-the-database)
+  * [Create the Schema](#create-the-schema)
+  * [Create SubmitOrder function](#reate-submitorder-function) 
+* [Use cases](#use-cases)
+  * [1. Submit a simple Order](#1-submit-a-simple-order) 
+  * [2. Submit an Order with insufficient stock](#2-submit-an-order-with-insufficient-stock) 
+  * [3. Submit two Orders with insufficient stock at the same time](#3-submit-two-orders-with-insufficient-stock-at-the-same-time)  
+
 ## Prerequisites
 In order to run the query snipptes below, you will need to setup a Fauna Cloud account and install the Fauna Shell in your computer. You can create a free Fauna Cloud account in seconds by signing up [here](https://dashboard.fauna.com/accounts/register). The [Fauna Shell](https://github.com/fauna/fauna-shell#fauna-shell) can be installed using [npm](https://www.npmjs.com/package/fauna-shell) or alternivately, if your on a Mac, you can use [Homebrew](https://formulae.brew.sh/formula/fauna-shell).
 
@@ -41,7 +52,7 @@ The data model represents a simple E-Commerce domain through following classes: 
 
 ##### Data model
 
-![alt text](images/warehouse.png "Warehouse")
+![alt text](../images/warehouse.png "Warehouse")
 
 > A _class_ is a group of data categorized within a database. If you’re familiar with traditional databases, you can think of a class as a table without a structured schema. Data within a class usually has a common structure, but this is not required. 
 
